@@ -57,7 +57,7 @@
     </distributionManagement>
 
     <properties>
-		<cronutils.version>8.0.0</cronutils.version>
+		<cronutils.version>9.0.2</cronutils.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <powermock.version>1.6.2</powermock.version>
@@ -102,6 +102,28 @@
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
+   <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.9</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.10</version>
+    </dependency>
+
+ <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-api</artifactId>
+       <version>1.7.5</version>
+   </dependency>
+   <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-simple</artifactId>
+       <version>1.6.4</version>
+   </dependency>
+
     </dependencies>
 
 	<build>

@@ -1,5 +1,9 @@
 package com.cronutils.cli;
 
+//import com.cronutils.converter.*;
+import com.cronutils.converter.CronConverter;
+import com.cronutils.converter.CalendarToCronTransformer;
+import com.cronutils.converter.CronToCalendarTransformer;
 import com.cronutils.descriptor.CronDescriptor;
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
@@ -13,6 +17,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import java.time.ZoneId;
 import java.util.Locale;
 
 /*
@@ -42,6 +47,8 @@ public class CronUtilsCLI {
         Options options = new Options();
         options.addOption("v", "validate", false, "Action of validation (default)");
         options.addOption("d", "describe", false, "Action of describe");
+        options.addOption("c", "convert-to-utc", false, "Convert to UTC");
+        options.addOption("i", "input-timezone", true, "Timezone of cron expression to convert to UTC");
         options.addOption("l", "language", true, "The language of the description. Example: en");
         options.addOption("f", "format", true,
                 "Cron expression format to validate. Possible values are: CRON4J, QUARTZ, UNIX");
@@ -69,6 +76,12 @@ public class CronUtilsCLI {
             CronDescriptor cronDescriptor = CronDescriptor.instance(findLocale(language));
             System.out.println(cronDescriptor.describe(parseCron(cmd)));
         }
+
+        if (cmd.hasOption('c')) {
+            String inputTZ = cmd.getOptionValue("i");
+            String expression = cmd.getOptionValue("e");
+            System.out.println(convertCronToGMT(expression, inputTZ));
+        }
     }
 
     private static Cron parseCron(CommandLine cmd) {
@@ -88,6 +101,15 @@ public class CronUtilsCLI {
             }
         }
         return Locale.ENGLISH;
+    }
+
+    private static String convertCronToGMT(String inputCronExpression, String inputTZ) {
+        CronConverter cronConverter = new CronConverter();
+        cronConverter.setToCalendarConverter(new CronToCalendarTransformer());
+        cronConverter.setToCronConverter(new CalendarToCronTransformer());
+        return cronConverter.using(inputCronExpression)
+            .from(ZoneId.of(inputTZ)).to(ZoneId.of("GMT"))
+            .convert();
     }
 
     private static void showHelp(Options options, String header, String footer) {
